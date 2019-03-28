@@ -11,8 +11,13 @@ import com.fr.swift.benchmark.env.EnvUtils;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.db.Table;
 import com.fr.swift.query.QueryRunnerProvider;
+import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.info.bean.element.DimensionBean;
+import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.OrFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.StringOneValueFilterBean;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.type.DimensionType;
 import com.fr.swift.result.SwiftResultSet;
@@ -126,134 +131,134 @@ public class FilterBenchmark {
         }
     }
 
-//    @Benchmark
-//    @BenchmarkMode(Mode.AverageTime)
-//    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-//    public void In(Blackhole bh) throws Exception {
-//        DetailQueryInfoBean query = DetailQueryInfoBean.builder(tableName)
-//                .setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN))
-//                .setFilter(new InFilterBean("a",
-//                        dimValues.get(random.nextInt(dimValues.size())),
-//                        dimValues.get(random.nextInt(dimValues.size())),
-//                        dimValues.get(random.nextInt(dimValues.size())),
-//                        dimValues.get(random.nextInt(dimValues.size())),
-//                        dimValues.get(random.nextInt(dimValues.size()))
-//                ))
-//                .build();
-//        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(query);
-//        while (resultSet.hasNext()) {
-//            bh.consume(resultSet.getNextRow());
-//        }
-//    }
-//
-//    @Benchmark
-//    @BenchmarkMode(Mode.AverageTime)
-//    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-//    public void Like(Blackhole bh) throws Exception {
-//        DetailQueryInfoBean query = DetailQueryInfoBean.builder(tableName)
-//                .setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN))
-//                .setFilter(new StringOneValueFilterBean("a",
-//                        SwiftDetailFilterType.STRING_LIKE,
-//                        Integer.toString(random.nextInt(dimValues.size()))
-//                ))
-//                .build();
-//        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(query);
-//        while (resultSet.hasNext()) {
-//            bh.consume(resultSet.getNextRow());
-//        }
-//    }
-//
-//    @Benchmark
-//    @BenchmarkMode(Mode.AverageTime)
-//    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-//    public void startWith(Blackhole bh) throws Exception {
-//        DetailQueryInfoBean query = DetailQueryInfoBean.builder(tableName)
-//                .setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN))
-//                .setFilter(new StringOneValueFilterBean("a",
-//                        SwiftDetailFilterType.STRING_STARTS_WITH,
-//                        dimValues.get(random.nextInt(dimValues.size()))
-//                ))
-//                .build();
-//        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(query);
-//        while (resultSet.hasNext()) {
-//            bh.consume(resultSet.getNextRow());
-//        }
-//    }
-//
-//    @Benchmark
-//    @BenchmarkMode(Mode.AverageTime)
-//    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-//    public void endWith(Blackhole bh) throws Exception {
-//        DetailQueryInfoBean query = DetailQueryInfoBean.builder(tableName)
-//                .setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN))
-//                .setFilter(new StringOneValueFilterBean("a",
-//                        SwiftDetailFilterType.STRING_ENDS_WITH,
-//                        Integer.toString(random.nextInt(dimValues.size()))
-//                ))
-//                .build();
-//        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(query);
-//        while (resultSet.hasNext()) {
-//            bh.consume(resultSet.getNextRow());
-//        }
-//    }
-//
-//    @Benchmark
-//    @BenchmarkMode(Mode.AverageTime)
-//    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-//    public void and(Blackhole bh) throws Exception {
-//        DetailQueryInfoBean query = DetailQueryInfoBean.builder(tableName)
-//                .setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN))
-//                .setFilter(
-//                        new AndFilterBean(
-//                                Arrays.asList(
-//                                        NumberInRangeFilterBean.builder("b")
-//                                                .setStart(Integer.toString(random.nextInt(dimCardinality)), true)
-//                                                .setEnd(Integer.toString(random.nextInt(dimCardinality)), false)
-//                                                .build(),
-//                                        new InFilterBean("a",
-//                                                dimValues.get(random.nextInt(dimValues.size())),
-//                                                dimValues.get(random.nextInt(dimValues.size())),
-//                                                dimValues.get(random.nextInt(dimValues.size())),
-//                                                dimValues.get(random.nextInt(dimValues.size())),
-//                                                dimValues.get(random.nextInt(dimValues.size()))
-//                                        )
-//                                )
-//                        )
-//                )
-//                .build();
-//        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(query);
-//        while (resultSet.hasNext()) {
-//            bh.consume(resultSet.getNextRow());
-//        }
-//    }
-//
-//    @Benchmark
-//    @BenchmarkMode(Mode.AverageTime)
-//    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-//    public void or(Blackhole bh) throws Exception {
-//        DetailQueryInfoBean query = DetailQueryInfoBean.builder(tableName)
-//                .setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN))
-//                .setFilter(
-//                        new OrFilterBean(
-//                                Arrays.asList(
-//                                        NumberInRangeFilterBean.builder("b")
-//                                                .setStart(Integer.toString(random.nextInt(dimCardinality)), true)
-//                                                .setEnd(Integer.toString(random.nextInt(dimCardinality)), false)
-//                                                .build(),
-//                                        new InFilterBean("a",
-//                                                dimValues.get(random.nextInt(dimValues.size())),
-//                                                dimValues.get(random.nextInt(dimValues.size())),
-//                                                dimValues.get(random.nextInt(dimValues.size())),
-//                                                dimValues.get(random.nextInt(dimValues.size())),
-//                                                dimValues.get(random.nextInt(dimValues.size()))
-//                                        )
-//                                )
-//                        )
-//                )
-//                .build();
-//        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(query);
-//        while (resultSet.hasNext()) {
-//            bh.consume(resultSet.getNextRow());
-//        }
-//    }
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void In(Blackhole bh) throws Exception {
+        DetailQueryInfoBean query = DetailQueryInfoBean.builder(tableName)
+                .setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN))
+                .setFilter(new InFilterBean("a",
+                        dimValues.get(random.nextInt(dimValues.size())),
+                        dimValues.get(random.nextInt(dimValues.size())),
+                        dimValues.get(random.nextInt(dimValues.size())),
+                        dimValues.get(random.nextInt(dimValues.size())),
+                        dimValues.get(random.nextInt(dimValues.size()))
+                ))
+                .build();
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(query);
+        while (resultSet.hasNext()) {
+            bh.consume(resultSet.getNextRow());
+        }
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void Like(Blackhole bh) throws Exception {
+        DetailQueryInfoBean query = DetailQueryInfoBean.builder(tableName)
+                .setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN))
+                .setFilter(new StringOneValueFilterBean("a",
+                        SwiftDetailFilterType.STRING_LIKE,
+                        Integer.toString(random.nextInt(dimValues.size()))
+                ))
+                .build();
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(query);
+        while (resultSet.hasNext()) {
+            bh.consume(resultSet.getNextRow());
+        }
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void startWith(Blackhole bh) throws Exception {
+        DetailQueryInfoBean query = DetailQueryInfoBean.builder(tableName)
+                .setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN))
+                .setFilter(new StringOneValueFilterBean("a",
+                        SwiftDetailFilterType.STRING_STARTS_WITH,
+                        dimValues.get(random.nextInt(dimValues.size()))
+                ))
+                .build();
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(query);
+        while (resultSet.hasNext()) {
+            bh.consume(resultSet.getNextRow());
+        }
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void endWith(Blackhole bh) throws Exception {
+        DetailQueryInfoBean query = DetailQueryInfoBean.builder(tableName)
+                .setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN))
+                .setFilter(new StringOneValueFilterBean("a",
+                        SwiftDetailFilterType.STRING_ENDS_WITH,
+                        Integer.toString(random.nextInt(dimValues.size()))
+                ))
+                .build();
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(query);
+        while (resultSet.hasNext()) {
+            bh.consume(resultSet.getNextRow());
+        }
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void and(Blackhole bh) throws Exception {
+        DetailQueryInfoBean query = DetailQueryInfoBean.builder(tableName)
+                .setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN))
+                .setFilter(
+                        new AndFilterBean(
+                                Arrays.asList(
+                                        NumberInRangeFilterBean.builder("b")
+                                                .setStart(Integer.toString(random.nextInt(dimCardinality)), true)
+                                                .setEnd(Integer.toString(random.nextInt(dimCardinality)), false)
+                                                .build(),
+                                        new InFilterBean("a",
+                                                dimValues.get(random.nextInt(dimValues.size())),
+                                                dimValues.get(random.nextInt(dimValues.size())),
+                                                dimValues.get(random.nextInt(dimValues.size())),
+                                                dimValues.get(random.nextInt(dimValues.size())),
+                                                dimValues.get(random.nextInt(dimValues.size()))
+                                        )
+                                )
+                        )
+                )
+                .build();
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(query);
+        while (resultSet.hasNext()) {
+            bh.consume(resultSet.getNextRow());
+        }
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void or(Blackhole bh) throws Exception {
+        DetailQueryInfoBean query = DetailQueryInfoBean.builder(tableName)
+                .setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN))
+                .setFilter(
+                        new OrFilterBean(
+                                Arrays.asList(
+                                        NumberInRangeFilterBean.builder("b")
+                                                .setStart(Integer.toString(random.nextInt(dimCardinality)), true)
+                                                .setEnd(Integer.toString(random.nextInt(dimCardinality)), false)
+                                                .build(),
+                                        new InFilterBean("a",
+                                                dimValues.get(random.nextInt(dimValues.size())),
+                                                dimValues.get(random.nextInt(dimValues.size())),
+                                                dimValues.get(random.nextInt(dimValues.size())),
+                                                dimValues.get(random.nextInt(dimValues.size())),
+                                                dimValues.get(random.nextInt(dimValues.size()))
+                                        )
+                                )
+                        )
+                )
+                .build();
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(query);
+        while (resultSet.hasNext()) {
+            bh.consume(resultSet.getNextRow());
+        }
+    }
 }
