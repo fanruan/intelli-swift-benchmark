@@ -2,9 +2,13 @@ package com.fr.swift.benchmark.env;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.boot.SwiftEngineStart;
-import com.fr.swift.config.service.SwiftCubePathService;
+import com.fr.swift.config.SwiftConfig;
+import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.config.entity.SwiftConfigEntity;
+import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.context.ContextProvider;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.concurrent.SwiftExecutors;
@@ -30,8 +34,9 @@ public class EnvUtils {
 
     public static void stop() {
         // 清理cubes文件
-        SwiftCubePathService service = SwiftContext.get().getBean(SwiftCubePathService.class);
-        File file = new File(service.getSwiftPath() + File.separator + CUBE);
+        final String contextPath = SwiftContext.get().getBean(ContextProvider.class).getContextPath();
+        final SwiftConfigEntityQueryBus query = (SwiftConfigEntityQueryBus) SwiftContext.get().getBean(SwiftConfig.class).query(SwiftConfigEntity.class);
+        File file = new File(query.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, contextPath) + File.separator + CUBE);
         try {
             FileUtils.deleteDirectory(file);
         } catch (Exception ignored) {
@@ -46,7 +51,6 @@ public class EnvUtils {
     public static void clearTable(String... tables) {
         for (String table : tables) {
             SwiftSegmentService segmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
-            ;
             segmentService.removeSegments(table);
             SwiftMetaDataService service = SwiftContext.get().getBean(SwiftMetaDataService.class);
             service.removeMetaDatas(new SourceKey(table));
