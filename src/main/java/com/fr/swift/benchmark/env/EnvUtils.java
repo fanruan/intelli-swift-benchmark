@@ -45,7 +45,7 @@ public class EnvUtils {
 
     public static void clearTable(String... tables) {
         for (String table : tables) {
-            SwiftSegmentService segmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+            SwiftSegmentService segmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
             segmentService.removeSegments(table);
             SwiftMetaDataService service = SwiftContext.get().getBean(SwiftMetaDataService.class);
             service.removeMetaDatas(new SourceKey(table));
